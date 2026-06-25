@@ -1,24 +1,112 @@
 -- =====================================================
--- COUNTER SH00T HUB BY NYFYBOD
+-- COUNTER SH00T HUB BY NYFYBOD (RAYFIELD KEY SYSTEM)
 -- =====================================================
 
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
-local LocalPlayer = Players.LocalPlayer
+-- =====================================================
+-- LOADING RAYFIELD С КЛЮЧОМ
+-- =====================================================
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "🔴 COUNTER SH00T",
+   LoadingTitle = "Authenticating",
+   LoadingSubtitle = "Checking your key...",
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = "CounterShootConfig",
+      FileName = "CounterShootSettings"
+   },
+   KeySystem = true,
+   KeySettings = {
+      Title = "🔑 KEY SYSTEM",
+      Subtitle = "Enter your key to continue",
+      Note = "Press the button below to get your key",
+      FileName = "CounterShootKey",
+      SaveKey = false,
+      GrabKeyFromSite = false,
+      Key = {"kX9$mP2#vL5@nQ7wR"} -- Можешь добавить несколько ключей через запятую
+   }
+})
 
 -- =====================================================
--- LOADING RAYFIELD
+-- ДОБАВЛЯЕМ КНОПКУ COPY LINK В ОКНО ВВОДА КЛЮЧА
 -- =====================================================
-local Rayfield
-local success, err = pcall(function()
-    Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
-end)
+-- Ждём пока загрузится окно с ключом
+task.wait(0.5)
 
-if not success then
-    warn("RAYFIELD FAILED TO LOAD! Error: " .. tostring(err))
-    return
+-- Находим окно Rayfield (оно последнее созданное)
+local keyWindow = nil
+for _, gui in pairs(game:GetService("CoreGui"):GetChildren()) do
+    if gui:IsA("ScreenGui") and gui.Name:find("Rayfield") then
+        keyWindow = gui
+        break
+    end
 end
+
+if keyWindow then
+    -- Ищем фрейм с вводом ключа
+    local keyFrame = nil
+    for _, child in pairs(keyWindow:GetDescendants()) do
+        if child:IsA("Frame") and child:FindFirstChild("TextBox") then
+            keyFrame = child
+            break
+        end
+    end
+    
+    if keyFrame then
+        -- Создаём кнопку COPY LINK
+        local copyBtn = Instance.new("TextButton")
+        copyBtn.Size = UDim2.new(0, 150, 0, 30)
+        copyBtn.Position = UDim2.new(0.5, -75, 0.8, 0)
+        copyBtn.BackgroundColor3 = Color3.fromRGB(30, 150, 255)
+        copyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        copyBtn.Font = Enum.Font.GothamBold
+        copyBtn.TextSize = 14
+        copyBtn.Text = "📋 COPY LINK"
+        copyBtn.BorderSizePixel = 0
+        copyBtn.Parent = keyFrame
+        
+        -- Функция копирования
+        local LINK_URL = "https://go.linkify.ru/2Irf"
+        
+        copyBtn.MouseButton1Click:Connect(function()
+            -- Копируем в буфер обмена
+            local success, err = pcall(function()
+                setclipboard(LINK_URL)
+            end)
+            
+            if success then
+                copyBtn.Text = "✅ COPIED!"
+                copyBtn.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+                task.wait(2)
+                copyBtn.Text = "📋 COPY LINK"
+                copyBtn.BackgroundColor3 = Color3.fromRGB(30, 150, 255)
+            else
+                copyBtn.Text = "❌ FAILED"
+                copyBtn.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+                task.wait(2)
+                copyBtn.Text = "📋 COPY LINK"
+                copyBtn.BackgroundColor3 = Color3.fromRGB(30, 150, 255)
+            end
+        end)
+        
+        -- Добавляем подсказку
+        local hint = Instance.new("TextLabel")
+        hint.Size = UDim2.new(0.8, 0, 0, 20)
+        hint.Position = UDim2.new(0.1, 0, 0.72, 0)
+        hint.BackgroundTransparency = 1
+        hint.Text = "Click COPY LINK to get your key"
+        hint.TextColor3 = Color3.fromRGB(150, 150, 150)
+        hint.Font = Enum.Font.GothamBold
+        hint.TextSize = 12
+        hint.Parent = keyFrame
+    end
+end
+
+-- =====================================================
+-- ПРОВЕРКА ЧТО КЛЮЧ ВВЕДЕН
+-- =====================================================
+print("🔐 KEY VALIDATED! Loading Counter Sh00t...")
 
 -- =====================================================
 -- SETTINGS
@@ -67,6 +155,14 @@ local Settings = {
         Value = 16
     }
 }
+
+-- =====================================================
+-- LOCAL PLAYER
+-- =====================================================
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local LocalPlayer = Players.LocalPlayer
 
 -- =====================================================
 -- TEAM CHECK FUNCTION
@@ -204,6 +300,115 @@ local function GetRootPart()
 end
 
 -- =====================================================
+-- TABS
+-- =====================================================
+local MainTab = Window:CreateTab("MAIN", 4483362458)
+local VisualTab = Window:CreateTab("VISUALS", 4483362458)
+local AimbotTab = Window:CreateTab("AIMBOT", 4483362458)
+local AntiAimTab = Window:CreateTab("ANTIAIM", 4483362458)
+local CameraTab = Window:CreateTab("CAMERA", 4483362458)
+local MovementTab = Window:CreateTab("MOVEMENT", 4483362458)
+local MiscTab = Window:CreateTab("MISC", 4483362458)
+
+-- =====================================================
+-- MAIN TAB
+-- =====================================================
+MainTab:CreateSection("CONTROLS")
+MainTab:CreateParagraph({
+    Title = "🔴 COUNTER SH00T v1.0",
+    Content = "F1 - ESP | F2 - Fly | F3 - Noclip | K - Menu"
+})
+
+-- =====================================================
+-- VISUALS TAB
+-- =====================================================
+VisualTab:CreateSection("ESP WALLHACK + NAMETAGS")
+
+local ESPToggle = VisualTab:CreateToggle({
+    Name = "Enable ESP",
+    CurrentValue = false,
+    Flag = "ESPEnabled",
+    Callback = function(Value)
+        Settings.ESP.Enabled = Value
+        if Value then UpdateAllESP() else RemoveAllESP() end
+    end
+})
+
+VisualTab:CreateSection("ESP SETTINGS")
+
+local TeamCheckESP = VisualTab:CreateToggle({
+    Name = "Team Check (Enemies Only)",
+    CurrentValue = true,
+    Flag = "TeamCheckESP",
+    Callback = function(Value)
+        Settings.ESP.TeamCheck = Value
+        if Settings.ESP.Enabled then UpdateAllESP() end
+    end
+})
+
+VisualTab:CreateParagraph({
+    Title = "👥 Team Check",
+    Content = "On - ESP shows only enemies\nOff - ESP shows everyone"
+})
+
+VisualTab:CreateSection("ESP COLOR")
+local ESPColorPicker = VisualTab:CreateColorPicker({
+    Name = "ESP Color",
+    Color = Color3.fromRGB(255, 0, 0),
+    Flag = "ESPColor",
+    Callback = function(Color)
+        Settings.ESP.Color = Color
+        if Settings.ESP.Enabled then UpdateAllESP() end
+    end
+})
+
+VisualTab:CreateSection("TRANSPARENCY")
+local ESPTransparency = VisualTab:CreateSlider({
+    Name = "ESP Transparency",
+    Range = {0, 100},
+    Increment = 10,
+    Suffix = "%",
+    CurrentValue = 50,
+    Flag = "ESPTransparency",
+    Callback = function(Value)
+        Settings.ESP.Transparency = Value / 100
+        if Settings.ESP.Enabled then UpdateAllESP() end
+    end
+})
+
+VisualTab:CreateSection("NAME DISPLAY")
+
+local ShowNamesToggle = VisualTab:CreateToggle({
+    Name = "Show Names",
+    CurrentValue = true,
+    Flag = "ShowNames",
+    Callback = function(Value)
+        Settings.ESP.ShowNames = Value
+        if Settings.ESP.Enabled then UpdateAllESP() end
+    end
+})
+
+local ShowHealthToggle = VisualTab:CreateToggle({
+    Name = "Show Health",
+    CurrentValue = true,
+    Flag = "ShowHealth",
+    Callback = function(Value)
+        Settings.ESP.ShowHealth = Value
+        if Settings.ESP.Enabled then UpdateAllESP() end
+    end
+})
+
+local ShowDistanceToggle = VisualTab:CreateToggle({
+    Name = "Show Distance",
+    CurrentValue = true,
+    Flag = "ShowDistance",
+    Callback = function(Value)
+        Settings.ESP.ShowDistance = Value
+        if Settings.ESP.Enabled then UpdateAllESP() end
+    end
+})
+
+-- =====================================================
 -- THIRD PERSON FUNCTIONS
 -- =====================================================
 local function EnableThirdPerson()
@@ -280,7 +485,7 @@ local function RemoveFOVCircle()
 end
 
 -- =====================================================
--- AIMBOT FUNCTIONS (WITH TEAM CHECK)
+-- AIMBOT FUNCTIONS
 -- =====================================================
 local function GetClosestEnemy()
     local char = GetCharacter()
@@ -418,6 +623,121 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
 end)
 
 -- =====================================================
+-- AIMBOT TAB
+-- =====================================================
+AimbotTab:CreateSection("AIMBOT SETTINGS")
+
+local AimbotToggle = AimbotTab:CreateToggle({
+    Name = "Enable Aimbot",
+    CurrentValue = false,
+    Flag = "AimbotEnabled",
+    Callback = function(Value)
+        Settings.Aimbot.Enabled = Value
+        ToggleAimbot()
+    end
+})
+
+AimbotTab:CreateSection("AIMBOT SETTINGS")
+
+local TeamCheckAimbot = AimbotTab:CreateToggle({
+    Name = "Team Check (Enemies Only)",
+    CurrentValue = true,
+    Flag = "TeamCheckAimbot",
+    Callback = function(Value)
+        Settings.Aimbot.TeamCheck = Value
+    end
+})
+
+AimbotTab:CreateParagraph({
+    Title = "👥 Team Check",
+    Content = "On - aims only at enemies\nOff - aims at everyone"
+})
+
+AimbotTab:CreateSection("ACTIVATION MODE")
+
+local AimModeDropdown = AimbotTab:CreateDropdown({
+    Name = "Aim Mode",
+    Options = {"Hold", "Toggle"},
+    CurrentOption = "Hold",
+    Flag = "AimMode",
+    Callback = function(Option)
+        if Option == "Hold" then
+            Settings.Aimbot.AimMode = "Hold"
+            aimMode = "Hold"
+        else
+            Settings.Aimbot.AimMode = "Toggle"
+            aimMode = "Toggle"
+        end
+    end
+})
+
+AimbotTab:CreateSection("TARGET")
+
+local TargetDropdown = AimbotTab:CreateDropdown({
+    Name = "Target Part",
+    Options = {"Head", "Body"},
+    CurrentOption = "Head",
+    Flag = "AimbotTarget",
+    Callback = function(Option)
+        if Option == "Head" then
+            Settings.Aimbot.Target = "Head"
+            targetPart = "Head"
+        else
+            Settings.Aimbot.Target = "Torso"
+            targetPart = "Torso"
+        end
+    end
+})
+
+AimbotTab:CreateSection("FOV RADIUS")
+
+local FOVSlider = AimbotTab:CreateSlider({
+    Name = "FOV Radius",
+    Range = {50, 500},
+    Increment = 10,
+    Suffix = "px",
+    CurrentValue = 200,
+    Flag = "AimbotFOV",
+    Callback = function(Value)
+        Settings.Aimbot.FOV = Value
+        fovRadius = Value
+        UpdateFOVCircle()
+    end
+})
+
+AimbotTab:CreateSection("SMOOTHNESS")
+
+local SmoothnessSlider = AimbotTab:CreateSlider({
+    Name = "Smoothness",
+    Range = {1, 100},
+    Increment = 5,
+    Suffix = "%",
+    CurrentValue = 30,
+    Flag = "AimbotSmoothness",
+    Callback = function(Value)
+        Settings.Aimbot.Smoothness = Value / 100
+        smoothness = Value / 100
+    end
+})
+
+AimbotTab:CreateSection("FOV DISPLAY")
+
+local ShowFOVToggle = AimbotTab:CreateToggle({
+    Name = "Show FOV Circle",
+    CurrentValue = true,
+    Flag = "ShowFOV",
+    Callback = function(Value)
+        Settings.Aimbot.ShowFOV = Value
+        if Value then
+            CreateFOVCircle()
+            UpdateFOVCircle()
+        else
+            RemoveFOVCircle()
+        end
+    end
+})
+
+-- =====================================================
 -- ANTIAIM FUNCTIONS
 -- =====================================================
 local function EnableAntiAim()
@@ -491,7 +811,98 @@ local function ToggleAntiAim()
 end
 
 -- =====================================================
--- ESP FUNCTIONS (ENEMIES ONLY)
+-- ANTIAIM TAB
+-- =====================================================
+AntiAimTab:CreateSection("ANTIAIM SETTINGS")
+
+local AntiAimToggle = AntiAimTab:CreateToggle({
+    Name = "Enable AntiAim",
+    CurrentValue = false,
+    Flag = "AntiAimEnabled",
+    Callback = function(Value)
+        Settings.AntiAim.Enabled = Value
+        if Value then
+            EnableAntiAim()
+        else
+            DisableAntiAim()
+        end
+    end
+})
+
+AntiAimTab:CreateSection("ANTIAIM MODE")
+
+local AntiAimModeDropdown = AntiAimTab:CreateDropdown({
+    Name = "AntiAim Mode",
+    Options = {"Spin", "Jitter", "Random"},
+    CurrentOption = "Spin",
+    Flag = "AntiAimMode",
+    Callback = function(Option)
+        if Option == "Spin" then
+            Settings.AntiAim.Mode = "Spin"
+            antiAimMode = "Spin"
+        elseif Option == "Jitter" then
+            Settings.AntiAim.Mode = "Jitter"
+            antiAimMode = "Jitter"
+        else
+            Settings.AntiAim.Mode = "Random"
+            antiAimMode = "Random"
+        end
+    end
+})
+
+AntiAimTab:CreateSection("SPEED")
+
+local AntiAimSpeedSlider = AntiAimTab:CreateSlider({
+    Name = "Rotation Speed",
+    Range = {1, 500},
+    Increment = 1,
+    Suffix = "",
+    CurrentValue = 5,
+    Flag = "AntiAimSpeed",
+    Callback = function(Value)
+        Settings.AntiAim.Speed = Value
+        antiAimSpeed = Value
+    end
+})
+
+-- =====================================================
+-- CAMERA TAB
+-- =====================================================
+CameraTab:CreateSection("CAMERA MODE")
+
+local ThirdPersonToggle = CameraTab:CreateToggle({
+    Name = "Enable Third Person",
+    CurrentValue = false,
+    Flag = "ThirdPerson",
+    Callback = function(Value)
+        Settings.ThirdPerson.Enabled = Value
+        if Value then
+            EnableThirdPerson()
+        else
+            DisableThirdPerson()
+        end
+    end
+})
+
+CameraTab:CreateSection("THIRD PERSON SETTINGS")
+
+local ThirdPersonDistance = CameraTab:CreateSlider({
+    Name = "Camera Distance",
+    Range = {3, 500},
+    Increment = 0.5,
+    Suffix = "",
+    CurrentValue = 10,
+    Flag = "ThirdPersonDistance",
+    Callback = function(Value)
+        Settings.ThirdPerson.Distance = Value
+        if thirdPersonEnabled then
+            LocalPlayer.CameraMaxZoomDistance = Value
+        end
+    end
+})
+
+-- =====================================================
+-- ESP FUNCTIONS
 -- =====================================================
 local function CreateESPForPlayer(player)
     if player == LocalPlayer then return end
@@ -910,338 +1321,6 @@ local function DisableInfiniteJump()
         hum.JumpPower = originalJumpPower or 50
     end
 end
-
--- =====================================================
--- RAYFIELD WINDOW
--- =====================================================
-local Window = Rayfield:CreateWindow({
-    Name = "🔴 COUNTER SH00T",
-    LoadingTitle = "COUNTER SH00T LOADING...",
-    LoadingSubtitle = "by Nyfybod",
-    Theme = "Default",
-    ConfigurationSaving = {
-        Enabled = true,
-        FolderName = "CounterShootConfig",
-        FileName = "CounterShootSettings"
-    },
-    KeySystem = false,
-    ToggleUIKeybind = "K"
-})
-
--- =====================================================
--- TABS
--- =====================================================
-local MainTab = Window:CreateTab("MAIN", 4483362458)
-local VisualTab = Window:CreateTab("VISUALS", 4483362458)
-local AimbotTab = Window:CreateTab("AIMBOT", 4483362458)
-local AntiAimTab = Window:CreateTab("ANTIAIM", 4483362458)
-local CameraTab = Window:CreateTab("CAMERA", 4483362458)
-local MovementTab = Window:CreateTab("MOVEMENT", 4483362458)
-local MiscTab = Window:CreateTab("MISC", 4483362458)
-
--- =====================================================
--- MAIN TAB
--- =====================================================
-MainTab:CreateSection("CONTROLS")
-MainTab:CreateParagraph({
-    Title = "🔴 COUNTER SH00T v1.0",
-    Content = "F1 - ESP | F2 - Fly | F3 - Noclip | K - Menu"
-})
-
--- =====================================================
--- VISUALS TAB
--- =====================================================
-VisualTab:CreateSection("ESP WALLHACK + NAMETAGS")
-
-local ESPToggle = VisualTab:CreateToggle({
-    Name = "Enable ESP",
-    CurrentValue = false,
-    Flag = "ESPEnabled",
-    Callback = function(Value)
-        Settings.ESP.Enabled = Value
-        if Value then UpdateAllESP() else RemoveAllESP() end
-    end
-})
-
-VisualTab:CreateSection("ESP SETTINGS")
-
-local TeamCheckESP = VisualTab:CreateToggle({
-    Name = "Team Check (Enemies Only)",
-    CurrentValue = true,
-    Flag = "TeamCheckESP",
-    Callback = function(Value)
-        Settings.ESP.TeamCheck = Value
-        if Settings.ESP.Enabled then UpdateAllESP() end
-    end
-})
-
-VisualTab:CreateParagraph({
-    Title = "👥 Team Check",
-    Content = "On - ESP shows only enemies\nOff - ESP shows everyone"
-})
-
-VisualTab:CreateSection("ESP COLOR")
-local ESPColorPicker = VisualTab:CreateColorPicker({
-    Name = "ESP Color",
-    Color = Color3.fromRGB(255, 0, 0),
-    Flag = "ESPColor",
-    Callback = function(Color)
-        Settings.ESP.Color = Color
-        if Settings.ESP.Enabled then UpdateAllESP() end
-    end
-})
-
-VisualTab:CreateSection("TRANSPARENCY")
-local ESPTransparency = VisualTab:CreateSlider({
-    Name = "ESP Transparency",
-    Range = {0, 100},
-    Increment = 10,
-    Suffix = "%",
-    CurrentValue = 50,
-    Flag = "ESPTransparency",
-    Callback = function(Value)
-        Settings.ESP.Transparency = Value / 100
-        if Settings.ESP.Enabled then UpdateAllESP() end
-    end
-})
-
-VisualTab:CreateSection("NAME DISPLAY")
-
-local ShowNamesToggle = VisualTab:CreateToggle({
-    Name = "Show Names",
-    CurrentValue = true,
-    Flag = "ShowNames",
-    Callback = function(Value)
-        Settings.ESP.ShowNames = Value
-        if Settings.ESP.Enabled then UpdateAllESP() end
-    end
-})
-
-local ShowHealthToggle = VisualTab:CreateToggle({
-    Name = "Show Health",
-    CurrentValue = true,
-    Flag = "ShowHealth",
-    Callback = function(Value)
-        Settings.ESP.ShowHealth = Value
-        if Settings.ESP.Enabled then UpdateAllESP() end
-    end
-})
-
-local ShowDistanceToggle = VisualTab:CreateToggle({
-    Name = "Show Distance",
-    CurrentValue = true,
-    Flag = "ShowDistance",
-    Callback = function(Value)
-        Settings.ESP.ShowDistance = Value
-        if Settings.ESP.Enabled then UpdateAllESP() end
-    end
-})
-
--- =====================================================
--- AIMBOT TAB
--- =====================================================
-AimbotTab:CreateSection("AIMBOT SETTINGS")
-
-local AimbotToggle = AimbotTab:CreateToggle({
-    Name = "Enable Aimbot",
-    CurrentValue = false,
-    Flag = "AimbotEnabled",
-    Callback = function(Value)
-        Settings.Aimbot.Enabled = Value
-        ToggleAimbot()
-    end
-})
-
-AimbotTab:CreateSection("AIMBOT SETTINGS")
-
-local TeamCheckAimbot = AimbotTab:CreateToggle({
-    Name = "Team Check (Enemies Only)",
-    CurrentValue = true,
-    Flag = "TeamCheckAimbot",
-    Callback = function(Value)
-        Settings.Aimbot.TeamCheck = Value
-    end
-})
-
-AimbotTab:CreateParagraph({
-    Title = "👥 Team Check",
-    Content = "On - aims only at enemies\nOff - aims at everyone"
-})
-
-AimbotTab:CreateSection("ACTIVATION MODE")
-
-local AimModeDropdown = AimbotTab:CreateDropdown({
-    Name = "Aim Mode",
-    Options = {"Hold", "Toggle"},
-    CurrentOption = "Hold",
-    Flag = "AimMode",
-    Callback = function(Option)
-        if Option == "Hold" then
-            Settings.Aimbot.AimMode = "Hold"
-            aimMode = "Hold"
-        else
-            Settings.Aimbot.AimMode = "Toggle"
-            aimMode = "Toggle"
-        end
-    end
-})
-
-AimbotTab:CreateSection("TARGET")
-
-local TargetDropdown = AimbotTab:CreateDropdown({
-    Name = "Target Part",
-    Options = {"Head", "Body"},
-    CurrentOption = "Head",
-    Flag = "AimbotTarget",
-    Callback = function(Option)
-        if Option == "Head" then
-            Settings.Aimbot.Target = "Head"
-            targetPart = "Head"
-        else
-            Settings.Aimbot.Target = "Torso"
-            targetPart = "Torso"
-        end
-    end
-})
-
-AimbotTab:CreateSection("FOV RADIUS")
-
-local FOVSlider = AimbotTab:CreateSlider({
-    Name = "FOV Radius",
-    Range = {50, 500},
-    Increment = 10,
-    Suffix = "px",
-    CurrentValue = 200,
-    Flag = "AimbotFOV",
-    Callback = function(Value)
-        Settings.Aimbot.FOV = Value
-        fovRadius = Value
-        UpdateFOVCircle()
-    end
-})
-
-AimbotTab:CreateSection("SMOOTHNESS")
-
-local SmoothnessSlider = AimbotTab:CreateSlider({
-    Name = "Smoothness",
-    Range = {1, 100},
-    Increment = 5,
-    Suffix = "%",
-    CurrentValue = 30,
-    Flag = "AimbotSmoothness",
-    Callback = function(Value)
-        Settings.Aimbot.Smoothness = Value / 100
-        smoothness = Value / 100
-    end
-})
-
-AimbotTab:CreateSection("FOV DISPLAY")
-
-local ShowFOVToggle = AimbotTab:CreateToggle({
-    Name = "Show FOV Circle",
-    CurrentValue = true,
-    Flag = "ShowFOV",
-    Callback = function(Value)
-        Settings.Aimbot.ShowFOV = Value
-        if Value then
-            CreateFOVCircle()
-            UpdateFOVCircle()
-        else
-            RemoveFOVCircle()
-        end
-    end
-})
-
--- =====================================================
--- ANTIAIM TAB
--- =====================================================
-AntiAimTab:CreateSection("ANTIAIM SETTINGS")
-
-local AntiAimToggle = AntiAimTab:CreateToggle({
-    Name = "Enable AntiAim",
-    CurrentValue = false,
-    Flag = "AntiAimEnabled",
-    Callback = function(Value)
-        Settings.AntiAim.Enabled = Value
-        if Value then
-            EnableAntiAim()
-        else
-            DisableAntiAim()
-        end
-    end
-})
-
-AntiAimTab:CreateSection("ANTIAIM MODE")
-
-local AntiAimModeDropdown = AntiAimTab:CreateDropdown({
-    Name = "AntiAim Mode",
-    Options = {"Spin", "Jitter", "Random"},
-    CurrentOption = "Spin",
-    Flag = "AntiAimMode",
-    Callback = function(Option)
-        if Option == "Spin" then
-            Settings.AntiAim.Mode = "Spin"
-            antiAimMode = "Spin"
-        elseif Option == "Jitter" then
-            Settings.AntiAim.Mode = "Jitter"
-            antiAimMode = "Jitter"
-        else
-            Settings.AntiAim.Mode = "Random"
-            antiAimMode = "Random"
-        end
-    end
-})
-
-AntiAimTab:CreateSection("SPEED")
-
-local AntiAimSpeedSlider = AntiAimTab:CreateSlider({
-    Name = "Rotation Speed",
-    Range = {1, 500},
-    Increment = 1,
-    Suffix = "",
-    CurrentValue = 5,
-    Flag = "AntiAimSpeed",
-    Callback = function(Value)
-        Settings.AntiAim.Speed = Value
-        antiAimSpeed = Value
-    end
-})
-
--- =====================================================
--- CAMERA TAB
--- =====================================================
-CameraTab:CreateSection("CAMERA MODE")
-
-local ThirdPersonToggle = CameraTab:CreateToggle({
-    Name = "Enable Third Person",
-    CurrentValue = false,
-    Flag = "ThirdPerson",
-    Callback = function(Value)
-        Settings.ThirdPerson.Enabled = Value
-        if Value then
-            EnableThirdPerson()
-        else
-            DisableThirdPerson()
-        end
-    end
-})
-
-CameraTab:CreateSection("THIRD PERSON SETTINGS")
-
-local ThirdPersonDistance = CameraTab:CreateSlider({
-    Name = "Camera Distance",
-    Range = {3, 500},
-    Increment = 0.5,
-    Suffix = "",
-    CurrentValue = 10,
-    Flag = "ThirdPersonDistance",
-    Callback = function(Value)
-        Settings.ThirdPerson.Distance = Value
-        if thirdPersonEnabled then
-            LocalPlayer.CameraMaxZoomDistance = Value
-        end
-    end
-})
 
 -- =====================================================
 -- MOVEMENT TAB
