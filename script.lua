@@ -1,5 +1,5 @@
 -- =====================================================
--- CHEAT HUB НА RAYFIELD UI (С TEAM CHECK)
+-- COUNTER SH00T HUB BY NYFYBOD
 -- =====================================================
 
 local Players = game:GetService("Players")
@@ -8,7 +8,7 @@ local UserInputService = game:GetService("UserInputService")
 local LocalPlayer = Players.LocalPlayer
 
 -- =====================================================
--- ЗАГРУЗКА RAYFIELD
+-- LOADING RAYFIELD
 -- =====================================================
 local Rayfield
 local success, err = pcall(function()
@@ -16,12 +16,12 @@ local success, err = pcall(function()
 end)
 
 if not success then
-    warn("RAYFIELD НЕ ЗАГРУЗИЛСЯ, БЛЯТЬ! Ошибка: " .. tostring(err))
+    warn("RAYFIELD FAILED TO LOAD! Error: " .. tostring(err))
     return
 end
 
 -- =====================================================
--- НАСТРОЙКИ
+-- SETTINGS
 -- =====================================================
 local Settings = {
     ESP = {
@@ -31,7 +31,7 @@ local Settings = {
         ShowNames = true,
         ShowHealth = true,
         ShowDistance = true,
-        TeamCheck = true -- ВКЛЮЧАЕМ ТИМЧЕК ПО УМОЛЧАНИЮ
+        TeamCheck = true
     },
     Aimbot = {
         Enabled = false,
@@ -41,7 +41,7 @@ local Settings = {
         Key = "RightButton",
         ShowFOV = true,
         AimMode = "Hold",
-        TeamCheck = true -- ВКЛЮЧАЕМ ТИМЧЕК ПО УМОЛЧАНИЮ
+        TeamCheck = true
     },
     AntiAim = {
         Enabled = false,
@@ -69,12 +69,11 @@ local Settings = {
 }
 
 -- =====================================================
--- ФУНКЦИЯ TEAM CHECK
+-- TEAM CHECK FUNCTION
 -- =====================================================
 local function IsEnemy(player)
     if player == LocalPlayer then return false end
     
-    -- Если тимчек выключен - все враги
     if not Settings.ESP.TeamCheck and not Settings.Aimbot.TeamCheck then
         return true
     end
@@ -84,36 +83,33 @@ local function IsEnemy(player)
     
     if not localChar or not targetChar then return true end
     
-    -- Проверяем по команде (Team)
     local localTeam = LocalPlayer.Team
     local targetTeam = player.Team
     
     if localTeam and targetTeam then
         if localTeam == targetTeam then
-            return false -- Свой
+            return false
         else
-            return true -- Враг
+            return true
         end
     end
     
-    -- Проверяем по цвету (для игр где нет Team)
     local localColor = localChar:FindFirstChild("Head") and localChar.Head.BrickColor
     local targetColor = targetChar:FindFirstChild("Head") and targetChar.Head.BrickColor
     
     if localColor and targetColor then
         if localColor == targetColor then
-            return false -- Свой
+            return false
         else
-            return true -- Враг
+            return true
         end
     end
     
-    -- Если не удалось определить - считаем врагом
     return true
 end
 
 -- =====================================================
--- ФУНКЦИЯ ПОЛУЧЕНИЯ ВРАГОВ
+-- GET ENEMIES FUNCTION
 -- =====================================================
 local function GetEnemies()
     local enemies = {}
@@ -126,7 +122,7 @@ local function GetEnemies()
 end
 
 -- =====================================================
--- ПЕРЕМЕННЫЕ ДЛЯ ESP
+-- ESP VARIABLES
 -- =====================================================
 local ActiveHighlights = {}
 local ActiveNameTags = {}
@@ -134,7 +130,7 @@ local ActiveHealthBars = {}
 local ActiveDistanceLabels = {}
 
 -- =====================================================
--- ПЕРЕМЕННЫЕ ДЛЯ АИМА
+-- AIMBOT VARIABLES
 -- =====================================================
 local aimbotEnabled = false
 local targetPart = "Head"
@@ -149,7 +145,7 @@ local isAiming = false
 local aimToggled = false
 
 -- =====================================================
--- ПЕРЕМЕННЫЕ ДЛЯ АНТИАИМА
+-- ANTIAIM VARIABLES
 -- =====================================================
 local antiAimEnabled = false
 local antiAimMode = "Spin"
@@ -158,20 +154,20 @@ local antiAimConnection = nil
 local currentAngle = 0
 
 -- =====================================================
--- ПЕРЕМЕННЫЕ ДЛЯ 3 ЛИЦА
+-- THIRD PERSON VARIABLES
 -- =====================================================
 local thirdPersonEnabled = false
 local originalCameraMode = nil
 local originalMaxZoom = nil
 
 -- =====================================================
--- ПЕРЕМЕННЫЕ ДЛЯ NOCLIP
+-- NOCLIP VARIABLES
 -- =====================================================
 _G.nc_cache = _G.nc_cache or {}
 local noclipEnabled = false
 
 -- =====================================================
--- ПЕРЕМЕННЫЕ ДЛЯ ПОЛЁТА
+-- FLY VARIABLES
 -- =====================================================
 local flyEnabled = false
 local flySpeed = 50
@@ -180,13 +176,15 @@ local bodyVelocity = nil
 local bodyGyro = nil
 
 -- =====================================================
--- ПЕРЕМЕННЫЕ ДЛЯ INFINITE JUMP
+-- INFINITE JUMP VARIABLES
 -- =====================================================
 local infiniteJumpConnection = nil
 local InfiniteJumpEnabled = false
 local originalJumpPower = 50
 
--- Функция получения персонажа
+-- =====================================================
+-- GET CHARACTER FUNCTIONS
+-- =====================================================
 local function GetCharacter()
     local char = LocalPlayer.Character
     if not char or not char.Parent then
@@ -206,7 +204,7 @@ local function GetRootPart()
 end
 
 -- =====================================================
--- ФУНКЦИЯ 3 ЛИЦА
+-- THIRD PERSON FUNCTIONS
 -- =====================================================
 local function EnableThirdPerson()
     if thirdPersonEnabled then return end
@@ -240,7 +238,7 @@ local function ToggleThirdPerson()
 end
 
 -- =====================================================
--- ФУНКЦИЯ FOV КРУГА
+-- FOV CIRCLE FUNCTIONS
 -- =====================================================
 local function CreateFOVCircle()
     if fovCircle then
@@ -282,7 +280,7 @@ local function RemoveFOVCircle()
 end
 
 -- =====================================================
--- ФУНКЦИЯ АИМА (С TEAM CHECK)
+-- AIMBOT FUNCTIONS (WITH TEAM CHECK)
 -- =====================================================
 local function GetClosestEnemy()
     local char = GetCharacter()
@@ -295,7 +293,6 @@ local function GetClosestEnemy()
     local closestPlayer = nil
     local closestDistance = fovRadius
     
-    -- Получаем только врагов
     local enemies = GetEnemies()
     
     for _, player in pairs(enemies) do
@@ -421,7 +418,7 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
 end)
 
 -- =====================================================
--- ФУНКЦИЯ АНТИАИМА
+-- ANTIAIM FUNCTIONS
 -- =====================================================
 local function EnableAntiAim()
     if antiAimEnabled then return end
@@ -494,14 +491,13 @@ local function ToggleAntiAim()
 end
 
 -- =====================================================
--- ФУНКЦИЯ СОЗДАНИЯ ESP (ТОЛЬКО НА ВРАГОВ)
+-- ESP FUNCTIONS (ENEMIES ONLY)
 -- =====================================================
 local function CreateESPForPlayer(player)
     if player == LocalPlayer then return end
     if not player.Character then return end
     if not Settings.ESP.Enabled then return end
     
-    -- TEAM CHECK - пропускаем союзников
     if Settings.ESP.TeamCheck and not IsEnemy(player) then
         return
     end
@@ -512,7 +508,6 @@ local function CreateESPForPlayer(player)
     
     if not head or not hum then return end
     
-    -- Удаляем старые объекты
     if ActiveHighlights[player] then
         pcall(function() ActiveHighlights[player]:Destroy() end)
         ActiveHighlights[player] = nil
@@ -669,14 +664,14 @@ local function UpdateDistances()
             local targetRoot = player.Character:FindFirstChild("HumanoidRootPart")
             if targetRoot then
                 local dist = (localRoot.Position - targetRoot.Position).Magnitude
-                distLabel.Text = string.format("%.1fм", dist)
+                distLabel.Text = string.format("%.1fm", dist)
             end
         end
     end
 end
 
 -- =====================================================
--- ФУНКЦИИ NOCLIP, FLY, INFINITE JUMP
+-- NOCLIP FUNCTIONS
 -- =====================================================
 local function EnableNoclip()
     if noclipEnabled then return end
@@ -739,6 +734,9 @@ local function ToggleNoclip()
     end
 end
 
+-- =====================================================
+-- FLY FUNCTIONS
+-- =====================================================
 local function StartFly()
     if flyEnabled then return end
     flyEnabled = true
@@ -867,6 +865,9 @@ local function ToggleFly()
     end
 end
 
+-- =====================================================
+-- INFINITE JUMP FUNCTIONS
+-- =====================================================
 local function EnableInfiniteJump()
     if InfiniteJumpEnabled then return end
     InfiniteJumpEnabled = true
@@ -911,49 +912,49 @@ local function DisableInfiniteJump()
 end
 
 -- =====================================================
--- СОЗДАНИЕ ОКНА RAYFIELD
+-- RAYFIELD WINDOW
 -- =====================================================
 local Window = Rayfield:CreateWindow({
-    Name = "🔴 CHEAT HUB",
-    LoadingTitle = "CHEAT HUB ЗАГРУЖАЕТСЯ...",
-    LoadingSubtitle = "by q0wus",
+    Name = "🔴 COUNTER SH00T",
+    LoadingTitle = "COUNTER SH00T LOADING...",
+    LoadingSubtitle = "by Nyfybod",
     Theme = "Default",
     ConfigurationSaving = {
         Enabled = true,
-        FolderName = "CheatHubConfig",
-        FileName = "CheatHubSettings"
+        FolderName = "CounterShootConfig",
+        FileName = "CounterShootSettings"
     },
     KeySystem = false,
     ToggleUIKeybind = "K"
 })
 
 -- =====================================================
--- ТАБЫ
+-- TABS
 -- =====================================================
-local MainTab = Window:CreateTab("ГЛАВНАЯ", 4483362458)
-local VisualTab = Window:CreateTab("ВИЗУАЛ", 4483362458)
-local AimbotTab = Window:CreateTab("АИМБОТ", 4483362458)
-local AntiAimTab = Window:CreateTab("АНТИАИМ", 4483362458)
-local CameraTab = Window:CreateTab("КАМЕРА", 4483362458)
-local MovementTab = Window:CreateTab("ДВИЖЕНИЕ", 4483362458)
-local MiscTab = Window:CreateTab("РАЗНОЕ", 4483362458)
+local MainTab = Window:CreateTab("MAIN", 4483362458)
+local VisualTab = Window:CreateTab("VISUALS", 4483362458)
+local AimbotTab = Window:CreateTab("AIMBOT", 4483362458)
+local AntiAimTab = Window:CreateTab("ANTIAIM", 4483362458)
+local CameraTab = Window:CreateTab("CAMERA", 4483362458)
+local MovementTab = Window:CreateTab("MOVEMENT", 4483362458)
+local MiscTab = Window:CreateTab("MISC", 4483362458)
 
 -- =====================================================
--- ГЛАВНАЯ
+-- MAIN TAB
 -- =====================================================
-MainTab:CreateSection("УПРАВЛЕНИЕ")
+MainTab:CreateSection("CONTROLS")
 MainTab:CreateParagraph({
-    Title = "🔴 CHEAT HUB v7.0",
-    Content = "F1 - ESP | F2 - Fly | F3 - Noclip | K - Меню"
+    Title = "🔴 COUNTER SH00T v1.0",
+    Content = "F1 - ESP | F2 - Fly | F3 - Noclip | K - Menu"
 })
 
 -- =====================================================
--- ВИЗУАЛ
+-- VISUALS TAB
 -- =====================================================
-VisualTab:CreateSection("ESP WALLHACK + НИКИ")
+VisualTab:CreateSection("ESP WALLHACK + NAMETAGS")
 
 local ESPToggle = VisualTab:CreateToggle({
-    Name = "Включить ESP",
+    Name = "Enable ESP",
     CurrentValue = false,
     Flag = "ESPEnabled",
     Callback = function(Value)
@@ -962,10 +963,10 @@ local ESPToggle = VisualTab:CreateToggle({
     end
 })
 
-VisualTab:CreateSection("НАСТРОЙКИ ESP")
+VisualTab:CreateSection("ESP SETTINGS")
 
 local TeamCheckESP = VisualTab:CreateToggle({
-    Name = "Team Check (Только враги)",
+    Name = "Team Check (Enemies Only)",
     CurrentValue = true,
     Flag = "TeamCheckESP",
     Callback = function(Value)
@@ -976,12 +977,12 @@ local TeamCheckESP = VisualTab:CreateToggle({
 
 VisualTab:CreateParagraph({
     Title = "👥 Team Check",
-    Content = "Включено - ESP видит только врагов\nВыключено - ESP видит всех"
+    Content = "On - ESP shows only enemies\nOff - ESP shows everyone"
 })
 
-VisualTab:CreateSection("ЦВЕТ ESP")
+VisualTab:CreateSection("ESP COLOR")
 local ESPColorPicker = VisualTab:CreateColorPicker({
-    Name = "Цвет подсветки",
+    Name = "ESP Color",
     Color = Color3.fromRGB(255, 0, 0),
     Flag = "ESPColor",
     Callback = function(Color)
@@ -990,9 +991,9 @@ local ESPColorPicker = VisualTab:CreateColorPicker({
     end
 })
 
-VisualTab:CreateSection("ПРОЗРАЧНОСТЬ")
+VisualTab:CreateSection("TRANSPARENCY")
 local ESPTransparency = VisualTab:CreateSlider({
-    Name = "Прозрачность подсветки",
+    Name = "ESP Transparency",
     Range = {0, 100},
     Increment = 10,
     Suffix = "%",
@@ -1004,10 +1005,10 @@ local ESPTransparency = VisualTab:CreateSlider({
     end
 })
 
-VisualTab:CreateSection("ОТОБРАЖЕНИЕ НАД ГОЛОВОЙ")
+VisualTab:CreateSection("NAME DISPLAY")
 
 local ShowNamesToggle = VisualTab:CreateToggle({
-    Name = "Показывать имена",
+    Name = "Show Names",
     CurrentValue = true,
     Flag = "ShowNames",
     Callback = function(Value)
@@ -1017,7 +1018,7 @@ local ShowNamesToggle = VisualTab:CreateToggle({
 })
 
 local ShowHealthToggle = VisualTab:CreateToggle({
-    Name = "Показывать здоровье",
+    Name = "Show Health",
     CurrentValue = true,
     Flag = "ShowHealth",
     Callback = function(Value)
@@ -1027,7 +1028,7 @@ local ShowHealthToggle = VisualTab:CreateToggle({
 })
 
 local ShowDistanceToggle = VisualTab:CreateToggle({
-    Name = "Показывать дистанцию",
+    Name = "Show Distance",
     CurrentValue = true,
     Flag = "ShowDistance",
     Callback = function(Value)
@@ -1037,12 +1038,12 @@ local ShowDistanceToggle = VisualTab:CreateToggle({
 })
 
 -- =====================================================
--- АИМБОТ
+-- AIMBOT TAB
 -- =====================================================
-AimbotTab:CreateSection("НАСТРОЙКИ АИМА")
+AimbotTab:CreateSection("AIMBOT SETTINGS")
 
 local AimbotToggle = AimbotTab:CreateToggle({
-    Name = "Включить аимбот",
+    Name = "Enable Aimbot",
     CurrentValue = false,
     Flag = "AimbotEnabled",
     Callback = function(Value)
@@ -1051,10 +1052,10 @@ local AimbotToggle = AimbotTab:CreateToggle({
     end
 })
 
-AimbotTab:CreateSection("НАСТРОЙКИ АИМА")
+AimbotTab:CreateSection("AIMBOT SETTINGS")
 
 local TeamCheckAimbot = AimbotTab:CreateToggle({
-    Name = "Team Check (Только враги)",
+    Name = "Team Check (Enemies Only)",
     CurrentValue = true,
     Flag = "TeamCheckAimbot",
     Callback = function(Value)
@@ -1064,18 +1065,18 @@ local TeamCheckAimbot = AimbotTab:CreateToggle({
 
 AimbotTab:CreateParagraph({
     Title = "👥 Team Check",
-    Content = "Включено - аим только по врагам\nВыключено - аим по всем"
+    Content = "On - aims only at enemies\nOff - aims at everyone"
 })
 
-AimbotTab:CreateSection("РЕЖИМ АКТИВАЦИИ")
+AimbotTab:CreateSection("ACTIVATION MODE")
 
 local AimModeDropdown = AimbotTab:CreateDropdown({
-    Name = "Режим работы",
-    Options = {"По зажатию (Hold)", "По нажатию (Toggle)"},
-    CurrentOption = "По зажатию (Hold)",
+    Name = "Aim Mode",
+    Options = {"Hold", "Toggle"},
+    CurrentOption = "Hold",
     Flag = "AimMode",
     Callback = function(Option)
-        if Option == "По зажатию (Hold)" then
+        if Option == "Hold" then
             Settings.Aimbot.AimMode = "Hold"
             aimMode = "Hold"
         else
@@ -1085,15 +1086,15 @@ local AimModeDropdown = AimbotTab:CreateDropdown({
     end
 })
 
-AimbotTab:CreateSection("ЦЕЛЬ")
+AimbotTab:CreateSection("TARGET")
 
 local TargetDropdown = AimbotTab:CreateDropdown({
-    Name = "Куда целиться",
-    Options = {"Голова", "Тело"},
-    CurrentOption = "Голова",
+    Name = "Target Part",
+    Options = {"Head", "Body"},
+    CurrentOption = "Head",
     Flag = "AimbotTarget",
     Callback = function(Option)
-        if Option == "Голова" then
+        if Option == "Head" then
             Settings.Aimbot.Target = "Head"
             targetPart = "Head"
         else
@@ -1103,10 +1104,10 @@ local TargetDropdown = AimbotTab:CreateDropdown({
     end
 })
 
-AimbotTab:CreateSection("РАДИУС FOV")
+AimbotTab:CreateSection("FOV RADIUS")
 
 local FOVSlider = AimbotTab:CreateSlider({
-    Name = "Радиус FOV",
+    Name = "FOV Radius",
     Range = {50, 500},
     Increment = 10,
     Suffix = "px",
@@ -1119,10 +1120,10 @@ local FOVSlider = AimbotTab:CreateSlider({
     end
 })
 
-AimbotTab:CreateSection("СГЛАЖИВАНИЕ")
+AimbotTab:CreateSection("SMOOTHNESS")
 
 local SmoothnessSlider = AimbotTab:CreateSlider({
-    Name = "Сглаживание",
+    Name = "Smoothness",
     Range = {1, 100},
     Increment = 5,
     Suffix = "%",
@@ -1134,10 +1135,10 @@ local SmoothnessSlider = AimbotTab:CreateSlider({
     end
 })
 
-AimbotTab:CreateSection("ОТОБРАЖЕНИЕ FOV")
+AimbotTab:CreateSection("FOV DISPLAY")
 
 local ShowFOVToggle = AimbotTab:CreateToggle({
-    Name = "Показывать FOV круг",
+    Name = "Show FOV Circle",
     CurrentValue = true,
     Flag = "ShowFOV",
     Callback = function(Value)
@@ -1152,12 +1153,12 @@ local ShowFOVToggle = AimbotTab:CreateToggle({
 })
 
 -- =====================================================
--- АНТИАИМ
+-- ANTIAIM TAB
 -- =====================================================
-AntiAimTab:CreateSection("НАСТРОЙКИ АНТИАИМА")
+AntiAimTab:CreateSection("ANTIAIM SETTINGS")
 
 local AntiAimToggle = AntiAimTab:CreateToggle({
-    Name = "Включить антиаим",
+    Name = "Enable AntiAim",
     CurrentValue = false,
     Flag = "AntiAimEnabled",
     Callback = function(Value)
@@ -1170,18 +1171,18 @@ local AntiAimToggle = AntiAimTab:CreateToggle({
     end
 })
 
-AntiAimTab:CreateSection("РЕЖИМ КРУЧЕНИЯ")
+AntiAimTab:CreateSection("ANTIAIM MODE")
 
 local AntiAimModeDropdown = AntiAimTab:CreateDropdown({
-    Name = "Режим антиаима",
-    Options = {"Spin (Вращение)", "Jitter (Дёрганье)", "Random (Рандом)"},
-    CurrentOption = "Spin (Вращение)",
+    Name = "AntiAim Mode",
+    Options = {"Spin", "Jitter", "Random"},
+    CurrentOption = "Spin",
     Flag = "AntiAimMode",
     Callback = function(Option)
-        if Option == "Spin (Вращение)" then
+        if Option == "Spin" then
             Settings.AntiAim.Mode = "Spin"
             antiAimMode = "Spin"
-        elseif Option == "Jitter (Дёрганье)" then
+        elseif Option == "Jitter" then
             Settings.AntiAim.Mode = "Jitter"
             antiAimMode = "Jitter"
         else
@@ -1191,10 +1192,10 @@ local AntiAimModeDropdown = AntiAimTab:CreateDropdown({
     end
 })
 
-AntiAimTab:CreateSection("СКОРОСТЬ")
+AntiAimTab:CreateSection("SPEED")
 
 local AntiAimSpeedSlider = AntiAimTab:CreateSlider({
-    Name = "Скорость вращения",
+    Name = "Rotation Speed",
     Range = {1, 500},
     Increment = 1,
     Suffix = "",
@@ -1207,12 +1208,12 @@ local AntiAimSpeedSlider = AntiAimTab:CreateSlider({
 })
 
 -- =====================================================
--- КАМЕРА
+-- CAMERA TAB
 -- =====================================================
-CameraTab:CreateSection("РЕЖИМ КАМЕРЫ")
+CameraTab:CreateSection("CAMERA MODE")
 
 local ThirdPersonToggle = CameraTab:CreateToggle({
-    Name = "Включить 3 лицо",
+    Name = "Enable Third Person",
     CurrentValue = false,
     Flag = "ThirdPerson",
     Callback = function(Value)
@@ -1225,11 +1226,11 @@ local ThirdPersonToggle = CameraTab:CreateToggle({
     end
 })
 
-CameraTab:CreateSection("НАСТРОЙКИ 3 ЛИЦА")
+CameraTab:CreateSection("THIRD PERSON SETTINGS")
 
 local ThirdPersonDistance = CameraTab:CreateSlider({
-    Name = "Дистанция камеры",
-    Range = {3, 20},
+    Name = "Camera Distance",
+    Range = {3, 500},
     Increment = 0.5,
     Suffix = "",
     CurrentValue = 10,
@@ -1243,12 +1244,12 @@ local ThirdPersonDistance = CameraTab:CreateSlider({
 })
 
 -- =====================================================
--- ДВИЖЕНИЕ
+-- MOVEMENT TAB
 -- =====================================================
-MovementTab:CreateSection("ПОЛЁТ (FLY)")
+MovementTab:CreateSection("FLY MODE")
 
 local FlyToggle = MovementTab:CreateToggle({
-    Name = "Включить полёт",
+    Name = "Enable Fly",
     CurrentValue = false,
     Flag = "FlyEnabled",
     Callback = function(Value)
@@ -1262,7 +1263,7 @@ local FlyToggle = MovementTab:CreateToggle({
 })
 
 local FlySpeed = MovementTab:CreateSlider({
-    Name = "Скорость полёта",
+    Name = "Fly Speed",
     Range = {10, 200},
     Increment = 5,
     Suffix = "",
@@ -1275,14 +1276,14 @@ local FlySpeed = MovementTab:CreateSlider({
 })
 
 MovementTab:CreateParagraph({
-    Title = "Управление полётом",
-    Content = "WASD - Движение\nSpace - Вверх\nShift - Вниз"
+    Title = "Fly Controls",
+    Content = "WASD - Movement\nSpace - Up\nShift - Down"
 })
 
-MovementTab:CreateSection("НОКЛИП (NOCLIP)")
+MovementTab:CreateSection("NOCLIP")
 
 local NoclipToggle = MovementTab:CreateToggle({
-    Name = "Включить ноклип",
+    Name = "Enable Noclip",
     CurrentValue = false,
     Flag = "NoclipEnabled",
     Callback = function(Value)
@@ -1294,10 +1295,10 @@ local NoclipToggle = MovementTab:CreateToggle({
     end
 })
 
-MovementTab:CreateSection("БЕСКОНЕЧНЫЕ ПРЫЖКИ")
+MovementTab:CreateSection("INFINITE JUMP")
 
 local InfiniteJumpToggle = MovementTab:CreateToggle({
-    Name = "Включить бесконечные прыжки",
+    Name = "Enable Infinite Jump",
     CurrentValue = false,
     Flag = "InfiniteJump",
     Callback = function(Value)
@@ -1309,10 +1310,10 @@ local InfiniteJumpToggle = MovementTab:CreateToggle({
     end
 })
 
-MovementTab:CreateSection("СКОРОСТЬ ХОДЬБЫ")
+MovementTab:CreateSection("WALK SPEED")
 
 local SpeedToggle = MovementTab:CreateToggle({
-    Name = "Изменить скорость",
+    Name = "Modify Walk Speed",
     CurrentValue = false,
     Flag = "SpeedEnabled",
     Callback = function(Value)
@@ -1325,7 +1326,7 @@ local SpeedToggle = MovementTab:CreateToggle({
 })
 
 local SpeedSlider = MovementTab:CreateSlider({
-    Name = "Скорость ходьбы",
+    Name = "Walk Speed",
     Range = {16, 200},
     Increment = 1,
     Suffix = "",
@@ -1341,18 +1342,18 @@ local SpeedSlider = MovementTab:CreateSlider({
 })
 
 -- =====================================================
--- РАЗНОЕ
+-- MISC TAB
 -- =====================================================
-MiscTab:CreateSection("ГОРЯЧИЕ КЛАВИШИ")
+MiscTab:CreateSection("HOTKEYS")
 MiscTab:CreateParagraph({
-    Title = "⌨️ Клавиши",
-    Content = "F1 - ESP\nF2 - FLY\nF3 - NOCLIP\nK - Скрыть меню"
+    Title = "⌨️ Hotkeys",
+    Content = "F1 - ESP\nF2 - FLY\nF3 - NOCLIP\nK - Toggle Menu"
 })
 
-MiscTab:CreateSection("УТИЛИТЫ")
+MiscTab:CreateSection("UTILITIES")
 
 MiscTab:CreateButton({
-    Name = "🔴 Сбросить всё",
+    Name = "🔴 Reset Everything",
     Callback = function()
         if Settings.ESP.Enabled then
             Settings.ESP.Enabled = false
@@ -1392,21 +1393,21 @@ MiscTab:CreateButton({
             if hum then hum.WalkSpeed = 16 end
             SpeedToggle:Set(false)
         end
-        Rayfield:Notify({Title = "✅ Сброс", Content = "Всё выключено нахуй!", Duration = 3})
+        Rayfield:Notify({Title = "✅ Reset", Content = "Everything disabled!", Duration = 3})
     end
 })
 
 MiscTab:CreateButton({
-    Name = "💀 Респавн",
+    Name = "💀 Respawn",
     Callback = function()
         local char = GetCharacter()
         if char then char:BreakJoints() end
-        Rayfield:Notify({Title = "💀 Респавн", Content = "Ты сдох, мудак!", Duration = 2})
+        Rayfield:Notify({Title = "💀 Respawn", Content = "You died!", Duration = 2})
     end
 })
 
 -- =====================================================
--- ОБРАБОТЧИКИ ДЛЯ ESP
+-- ESP EVENT HANDLERS
 -- =====================================================
 local function OnPlayerAdded(player)
     if player == LocalPlayer then return end
@@ -1427,7 +1428,9 @@ for _, player in pairs(Players:GetPlayers()) do
 end
 Players.PlayerAdded:Connect(OnPlayerAdded)
 
--- Обновление ESP
+-- =====================================================
+-- ESP UPDATE LOOP
+-- =====================================================
 RunService.RenderStepped:Connect(function()
     if not Settings.ESP.Enabled then
         for player, highlight in pairs(ActiveHighlights) do
@@ -1441,14 +1444,12 @@ RunService.RenderStepped:Connect(function()
     
     for _, player in pairs(Players:GetPlayers()) do
         if player ~= LocalPlayer and player.Character then
-            -- Проверяем, есть ли уже ESP и нужно ли его обновить
             local hasESP = ActiveHighlights[player] and ActiveHighlights[player].Parent ~= nil
             local shouldHaveESP = Settings.ESP.TeamCheck and IsEnemy(player) or not Settings.ESP.TeamCheck
             
             if shouldHaveESP and not hasESP then
                 CreateESPForPlayer(player)
             elseif not shouldHaveESP and hasESP then
-                -- Удаляем ESP если это союзник
                 if ActiveHighlights[player] then
                     pcall(function() ActiveHighlights[player]:Destroy() end)
                     ActiveHighlights[player] = nil
@@ -1471,7 +1472,7 @@ RunService.RenderStepped:Connect(function()
 end)
 
 -- =====================================================
--- ПЕРЕСОЗДАНИЕ ПЕРСОНАЖА
+-- CHARACTER RESPAWN HANDLER
 -- =====================================================
 LocalPlayer.CharacterAdded:Connect(function()
     wait(0.5)
@@ -1488,7 +1489,7 @@ LocalPlayer.CharacterAdded:Connect(function()
     end
     
     if noclipEnabled then
-        print("🔴 NOCLIP ОСТАЕТСЯ ВКЛЮЧЕННЫМ")
+        print("🔴 NOCLIP REMAINS ENABLED")
     end
     
     if InfiniteJumpEnabled then
@@ -1511,7 +1512,7 @@ LocalPlayer.CharacterAdded:Connect(function()
 end)
 
 -- =====================================================
--- ИЗМЕНЕНИЕ ДИСТАНЦИИ КОЛЕСИКОМ МЫШИ
+-- MOUSE WHEEL DISTANCE CHANGE
 -- =====================================================
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if gameProcessed then return end
@@ -1530,7 +1531,7 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
 end)
 
 -- =====================================================
--- ГОРЯЧИЕ КЛАВИШИ
+-- HOTKEYS
 -- =====================================================
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if gameProcessed then return end
@@ -1551,20 +1552,20 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
 end)
 
 -- =====================================================
--- ПРИВЕТСТВИЕ
+-- WELCOME NOTIFICATION
 -- =====================================================
 Rayfield:Notify({
-    Title = "🔴 CHEAT HUB v7.0",
-    Content = "Загружен с Team Check нахуй! Жми K для меню",
+    Title = "🔴 COUNTER SH00T",
+    Content = "Loaded with Team Check! Press K for menu",
     Duration = 5,
     Image = 4483362458
 })
 
 print("═══════════════════════════════════════════")
-print("🔴 CHEAT HUB v7.0 ЗАГРУЖЕН!")
+print("🔴 COUNTER SH00T BY NYFYBOD")
 print("═══════════════════════════════════════════")
-print("F1 - ESP WALLHACK (ТОЛЬКО ВРАГИ!)")
+print("F1 - ESP WALLHACK (ENEMIES ONLY!)")
 print("F2 - FLY MODE")
 print("F3 - NOCLIP")
-print("K - Скрыть/Показать меню")
+print("K - Toggle Menu")
 print("═══════════════════════════════════════════")
