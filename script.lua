@@ -1195,7 +1195,7 @@ AntiAimTab:CreateSection("СКОРОСТЬ")
 
 local AntiAimSpeedSlider = AntiAimTab:CreateSlider({
     Name = "Скорость вращения",
-    Range = {1, 20},
+    Range = {1, 500},
     Increment = 1,
     Suffix = "",
     CurrentValue = 5,
